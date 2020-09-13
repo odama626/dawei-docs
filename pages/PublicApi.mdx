@@ -1,0 +1,118 @@
+---
+name: API Reference
+---
+
+import { Playground } from 'dokz';
+
+# Publically exposed functions
+
+There are only 2 publically exposed functions for the api, beyond creating the store or atom all functionality is in the state object.
+
+## createAtom(value | transform)
+
+Create a single atomic value that can be shared across different components. Or derive a value from another Dawei state and it will update automatically.
+
+```js
+import { createAtom } from 'dawei';
+
+const textAtom = createAtom('hello world');
+const uppercaseAtom = createAtom(get => get(textAtom).toUpperCase());
+```
+
+the get function will return the current value of an atom, or if not provided an atom will return the current state of itself.
+
+## createStore(value | creator)
+
+```js
+import { createStore } from 'dawei';
+
+const counterStore = createStore((get, set) => ({
+  count: 0,
+  increment: () => set({ count: get().count + 1 }),
+  decrement: () => set({ count: get().count - 1 })
+}));
+```
+
+You can use a store as an atom for subscriptions as well
+
+```js
+const countAtom = useAtom(get => get(counterStore).count);
+```
+
+# State API
+
+Stores and Atoms share the same state api.
+
+> With the exception of [use](/PublicApi#useselector) none of these methods require **React**
+
+## .get(selector?)
+
+Get allows you to get the current value of the state.
+
+> This just gets the current value and does not subscribe.
+> If you need to listen for changes without a hook you're looking for [subscribe](/PublicApi#subscribelistener)
+
+```js
+// using store and atom from above
+
+let count = counterStore.get(state => state.count);
+
+console.log(count, 'minutes maybe?');
+```
+
+## .set(value | update)
+
+Set accepts either a value or a function `value => nextValue`
+
+> when state is an object, set will accept a partial update
+
+```js
+/// using store and atom from above
+
+textAtom.set(text => `${text}. This is da wei`);
+
+counterStore.set({ count: 7001 });
+```
+
+## .subscribe(listener)
+
+Subscribe to changes on a state.  This will also send the current value asynchrounously after subscribing.
+
+subscribe returns a function that can be used to unsubscribe
+
+```js
+/// using store and atom from above
+
+textAtom.subscribe(text => {
+  console.log('got text', text);
+  // got text hello world,
+  // got text da wei
+})
+
+textAtom.set('da wei');
+
+```
+
+## .use(selector?)
+
+This is the star of the show. "Use" is a hook that works similarly to useState.
+
+like useState, it also returns an array [get, set]
+
+```js
+// using store and atom from above
+
+const myApp() = => {
+  const [counter] = counterStore.use();
+  const [text, setText] = textAtom.use();
+
+  return (
+    <>
+      <button onClick={counter.increment}>add</button>
+      <input value={text} onChange={e => setText(e.target.value)} />
+    </>
+  )
+}
+```
+
+

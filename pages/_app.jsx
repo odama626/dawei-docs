@@ -14,18 +14,16 @@ export default function App(props) {
                 />
             </Head>
             <DokzProvider
+            githubUrl='odama626/dawei-docs'
                 headerItems={[
                     <GithubLink
                         key='0'
-                        url='https://github.com/remorses/dokz'
+                        url='https://github.com/odama626/dawei'
                     />,
                     <ColorModeSwitch key='1' />,
                 ]}
                 sidebarOrdering={{
                     'index.mdx': true,
-                    Documents_Group: {
-                        'another.mdx': true,
-                    },
                 }}
             >
                 <Component {...pageProps} />

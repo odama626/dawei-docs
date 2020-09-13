@@ -1,0 +1,26 @@
+---
+name: Differences
+---
+
+# So why Dawei?
+
+It seems like the react state management space is pretty crowded right now and with the addition of Recoil and Zustand we're on the brink of a new revolution of react.
+
+However they both do things completely differently and solve different problems.
+
+- Atoms are bottom up
+- Stores are top down
+
+Stores have been around for some time now and they work well for big monolithic app storage mechanisms but they don't fit all of our potential needs and currently most of them use react context.
+
+Atoms are a newer concept and are built with the idea of small component sharing some state without the need to also update and rerender their parents.  They were originally realized with Recoil.
+
+With that in mind its not too uncommon for a single application to have different parts where either atoms or stores would be better suited.  Since we will probably need both, then we should make sure they work well together and don't add too much code to the bundle.  That is where Dawei comes in.  It supports both in a way that they are fully compatible and share the same code.
+
+## What are Atoms?
+When you have a bunch of small components that need to share state, in React you typically need to pass the values up to a shared parent and "prop drill" them all they way down to where you need them.  Alternatively you can use a react context and to store the shared values for your different leaf node components.
+
+Neither of these options are ideal because they both require rerendering a potentially large component tree.  Furthermore, when it comes to having more than one group of shared state you need to wrap your entire application in a new context for each set of values.  
+
+With atoms (and stores for that matter) you don't need to worry about rerendering anything above the child nodes that are subscribed to the values when they change.  Atoms don't use context and only trigger rerenders when the stored value changes.
+

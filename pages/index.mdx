@@ -1,34 +1,40 @@
 ---
-name: Getting started
+name: Introduction
 ---
 
 import { Playground } from 'dokz'
 
-# Main Heading
 
-Officia do eu reprehenderit laborum exercitation eu nisi deserunt aliqua consequat eiusmod.
+# dawei... because it is da wei
 
-Duis incididunt fugiat est aliqua deserunt do aliquip laboris in exercitation laboris nulla minim incididunt.
+Simple and fast state management for React.
 
-## Second Heading
-
-Quis ullamco id duis sit ipsum laborum fugiat occaecat. Commodo aliqua adipisicing non nisi. Dolore aute magna cupidatat qui quis laboris. Irure veniam deserunt veniam ullamco anim pariatur deserunt. Amet commodo aliqua ut fugiat sunt pariatur ullamco cillum duis ipsum amet anim incididunt. Ut esse dolore in ullamco enim sit cillum eu labore consectetur labore sunt.
-
-### Third Heading
-
-Here is some code
+Inspired by Zustand and Recoil.  without the context or the fluff.
 
 ```js
-const x = 'fucking'
-console.log('hello ' + x + ' world')
+// Create your atoms and derivatives
+import { createAtom, createStore } from 'dawei';
+
+const textAtom = createAtom('Hello');
+const uppercaseAtom = createAtom(get => get(textAtom).toUpperCase());
+
+// yes you can create stores too
+const counterStore = createStore((get, set) => ({
+  count: 0,
+  increment: () => set({ count: get().count + 1 }),
+  decrement: () => set({ count: get().count - 1 })
+}));
+
+// Use them anywhere in your app and they stay synced
+const Input = () => {
+  const [text, setText] = textAtom.use();
+  return <input value={text} onChange={(e) => setText(e.target.value)} />
+}
+
+const Uppercase = () => {
+  const [uppercase] = uppercaseAtom.use();
+  return <div>Uppercase: {uppercase}</div>
+}
 ```
 
-## Using the playground
-
-You can use live react code to display react component with a preview
-
-<Playground>
-    <div style={{ width: 100, height: 100, background: 'lightblue' }}>
-        hello everyone
-    </div>
-</Playground>
+![Dawei](dawei-mascot.png)

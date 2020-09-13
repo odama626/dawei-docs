@@ -1,0 +1,53 @@
+---
+name: Getting Started
+---
+
+# Getting Started
+
+## Install
+
+install the package
+
+```sh
+npm install dawei
+```
+
+## Create your Store or Atom
+
+Lets create both an Atom and a Store
+
+```js
+import { createAtom, createStore } from 'dawei';
+
+const textAtom = createAtom('Hello');
+
+const uppercaseAtom = createAtom(get => get(textAtom).toUpperCase());
+
+// yes you can create stores too
+const counterStore = createStore((get, set) => ({
+  count: 0,
+  increment: () => set({ count: get().count + 1 }),
+  decrement: () => set({ count: get().count - 1 })
+}));
+```
+
+## Use your new hooks
+
+```js
+const Input = () => {
+  const [text, setText] = textAtom.use();
+  return <input value={text} onChange={e => setText(e.target.value)} />;
+};
+
+const Counter = () => {
+  const [counter] = counterStore.use();
+
+  return (
+    <div>
+      <button onClick={() => counter.decrement()}>-</button>
+      <span>{counter.count}</span>
+      <button onClick={() => counter.increment()}>+</button>
+    </div>
+  );
+};
+```
